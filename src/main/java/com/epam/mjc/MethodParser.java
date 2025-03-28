@@ -30,12 +30,17 @@ public class MethodParser {
             while (firstToken.hasMoreTokens()) {
                 methodSignatureList.add(firstToken.nextToken());
             }
-            if (methodSignatureList.size() < 3) {
+
+            if(methodSignatureList.size()<2){
+                return null;
+            }
+
+            if (methodSignatureList.size() == 2) {
                 String returnType = methodSignatureList.get(0);
                 String methodNameWithArguments = methodSignatureList.get(1);
                 return getMethodSignatureWithoutAccessModifier(methodNameWithArguments, returnType);
-
             }
+
             String accessModifier = methodSignatureList.get(0);
             String returnType = methodSignatureList.get(1);
             String methodNameWithArguments = methodSignatureList.get(2);
@@ -61,23 +66,23 @@ public class MethodParser {
     }
 
     private static MethodSignature splitMethodNameAndArgument(String methodNameWithArguments) {
-        StringTokenizer secondToken = new StringTokenizer(methodNameWithArguments, "(,)");
-        String methodName = secondToken.nextToken();
-        List<String> argumentList = new ArrayList<>();
-        while (secondToken.hasMoreTokens()) {
-            argumentList.add(secondToken.nextToken());
-        }
+        int startIndex = methodNameWithArguments.indexOf("(");
+        int endIndex = methodNameWithArguments.indexOf(")");
+
+        String methodName = methodNameWithArguments.substring(0, startIndex);
+        String argumentString = methodNameWithArguments.substring(startIndex + 1, endIndex);
 
         List<MethodSignature.Argument> arguments = new ArrayList<>();
-        for (String argument : argumentList) {
-            String[] parts = argument.split(" ");
-            if (parts.length == 1) {
-                return new MethodSignature(methodName);
+        if (!argumentString.isEmpty()) {
+            String[] argumentStrings = argumentString.split(",");
+            for (String argument : argumentStrings) {
+                String[] splitArgument = argument.trim().split(" ");
+                if (splitArgument.length == 2) {
+                    arguments.add(new MethodSignature.Argument(splitArgument[0], splitArgument[1]));
+                }
             }
-            MethodSignature.Argument eachArgument = new MethodSignature.Argument(parts[0], parts[1]);
-            arguments.add(eachArgument);
         }
-
         return new MethodSignature(methodName, arguments);
     }
 }
+
