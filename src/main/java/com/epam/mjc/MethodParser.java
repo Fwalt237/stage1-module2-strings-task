@@ -53,7 +53,6 @@ public class MethodParser {
 
     private static MethodSignature getMethodSignatureWithoutAccessModifier(String methodNameWithArguments, String returnType) {
         MethodSignature methodSignature =  splitMethodNameAndArgument(methodNameWithArguments);
-        assert methodSignature != null;
         methodSignature.setReturnType(returnType);
         return methodSignature;
     }
@@ -61,7 +60,6 @@ public class MethodParser {
 
     private static MethodSignature getMethodSignature(String methodNameWithArguments, String accessModifier, String returnType) {
         MethodSignature methodSignature =splitMethodNameAndArgument(methodNameWithArguments);
-        assert methodSignature != null;
         methodSignature.setAccessModifier(accessModifier);
         methodSignature.setReturnType(returnType);
         return methodSignature;
