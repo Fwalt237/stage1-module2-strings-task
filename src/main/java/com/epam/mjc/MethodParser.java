@@ -30,6 +30,12 @@ public class MethodParser {
             while (firstToken.hasMoreTokens()) {
                 methodSignatureList.add(firstToken.nextToken());
             }
+            if (methodSignatureList.size() < 3) {
+                String returnType = methodSignatureList.get(0);
+                String methodNameWithArguments = methodSignatureList.get(1);
+                return getMethodSignatureWithoutAccessModifier(methodNameWithArguments, returnType);
+
+            }
             String accessModifier = methodSignatureList.get(0);
             String returnType = methodSignatureList.get(1);
             String methodNameWithArguments = methodSignatureList.get(2);
@@ -40,23 +46,38 @@ public class MethodParser {
         }
     }
 
+    private static MethodSignature getMethodSignatureWithoutAccessModifier(String methodNameWithArguments, String returnType) {
+        MethodSignature methodSignature =  splitMethodNameAndArgument(methodNameWithArguments);
+        methodSignature.setReturnType(returnType);
+        return methodSignature;
+    }
+
+
     private static MethodSignature getMethodSignature(String methodNameWithArguments, String accessModifier, String returnType) {
+        MethodSignature methodSignature =splitMethodNameAndArgument(methodNameWithArguments);
+        methodSignature.setAccessModifier(accessModifier);
+        methodSignature.setReturnType(returnType);
+        return methodSignature;
+    }
+
+    private static MethodSignature splitMethodNameAndArgument(String methodNameWithArguments) {
         StringTokenizer secondToken = new StringTokenizer(methodNameWithArguments, "(,)");
         String methodName = secondToken.nextToken();
         List<String> argumentList = new ArrayList<>();
         while (secondToken.hasMoreTokens()) {
             argumentList.add(secondToken.nextToken());
         }
+
         List<MethodSignature.Argument> arguments = new ArrayList<>();
         for (String argument : argumentList) {
             String[] parts = argument.split(" ");
+            if (parts.length == 1) {
+                return new MethodSignature(methodName);
+            }
             MethodSignature.Argument eachArgument = new MethodSignature.Argument(parts[0], parts[1]);
             arguments.add(eachArgument);
         }
 
-        MethodSignature methodSignature = new MethodSignature(methodName, arguments);
-        methodSignature.setAccessModifier(accessModifier);
-        methodSignature.setReturnType(returnType);
-        return methodSignature;
+        return new MethodSignature(methodName, arguments);
     }
 }
