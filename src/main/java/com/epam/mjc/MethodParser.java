@@ -52,17 +52,33 @@ public class MethodParser {
     }
 
     private static MethodSignature getMethodSignatureWithoutAccessModifier(String methodNameWithArguments, String returnType) {
-        MethodSignature methodSignature =  splitMethodNameAndArgument(methodNameWithArguments);
-        methodSignature.setReturnType(returnType);
-        return methodSignature;
+        try{
+            MethodSignature methodSignature =  splitMethodNameAndArgument(methodNameWithArguments);
+            if (methodSignature != null) {
+                methodSignature.setReturnType(returnType);
+            }
+            return methodSignature;
+        } catch(NullPointerException e){
+            throw new NoSuchMethodError(methodNameWithArguments);
+        }
+
     }
 
 
     private static MethodSignature getMethodSignature(String methodNameWithArguments, String accessModifier, String returnType) {
-        MethodSignature methodSignature =splitMethodNameAndArgument(methodNameWithArguments);
-        methodSignature.setAccessModifier(accessModifier);
-        methodSignature.setReturnType(returnType);
-        return methodSignature;
+        try{
+            MethodSignature methodSignature =splitMethodNameAndArgument(methodNameWithArguments);
+            if (methodSignature != null) {
+                methodSignature.setAccessModifier(accessModifier);
+            }
+            if (methodSignature != null) {
+                methodSignature.setReturnType(returnType);
+            }
+            return methodSignature;
+        } catch(NullPointerException e){
+            throw new NoSuchMethodError(methodNameWithArguments);
+        }
+
     }
 
     private static MethodSignature splitMethodNameAndArgument(String methodNameWithArguments) {
