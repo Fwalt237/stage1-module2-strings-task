@@ -17,6 +17,18 @@ public class MethodParserTest extends TestCase {
         assertArgument(signature.getArguments().get(0), "String", "logString");
         assertArgument(signature.getArguments().get(1), "LogLevel", "level");
         assertArgument(signature.getArguments().get(2), "Context", "context");
+
+        MethodSignature methodSignature = parser.parseFunction("int getSum(int a, int b)");
+
+        if(methodSignature != null) {
+            //perform tests here.
+            assertEquals("getSum", methodSignature.getMethodName());
+            assertEquals("int", methodSignature.getReturnType());
+            assertEquals(2, methodSignature.getArguments().size());
+        } else {
+            //handle the null return, maybe fail the test, or mark it as inconclusive.
+            fail("The method parser returned null.");
+        }
     }
 
     @Test
